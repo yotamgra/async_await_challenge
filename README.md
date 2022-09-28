@@ -1,5 +1,7 @@
 # Async Await Challenge
 
+<img width="1305" alt="application" src="https://user-images.githubusercontent.com/31222514/192848453-9e0fd294-4aa1-40f9-91a3-efff144584f2.png">
+
 ## Required Tasks
 
 We need to render all the logged in user's posts.

@@ -80,16 +80,31 @@ const createAvatar = (user) => {
 
 const getLoginUser = async () => {
   const id = getUserId();
-
-  // FETCH USER DATA
+  const response = await fetch(`${DATABASE_URL}/users/${id}`);
+  const user = await response.json();
 
   createAvatar(user);
 };
 
 const getUserPosts = async (id) => {
-  // FETCH POSTS DATA
+  const postResponse = await fetch(`${DATABASE_URL}/posts`);
+  const posts = await postResponse.json();
 
-  // FETCH COMMENTS RELATED TO POSTS
+  const commentResponse = await fetch(`${DATABASE_URL}/comments`);
+  const comments = await commentResponse.json();
+  console.log(comments);
+  const userPosts = posts
+    .filter((post) => post.userId === getUserId())
+    .map((post) => {
+      const postComments = comments.filter(
+        (comment) => comment.postId === post.id
+      );
+
+      return {
+        ...post,
+        comments: postComments,
+      };
+    });
 
   const postsCards = userPosts.map((post) => {
     return createPostCard(post);

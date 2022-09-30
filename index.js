@@ -111,16 +111,38 @@ const getUserFriends = () => {
   friendsButton.addEventListener("click", () => {
     postsContainer.innerHTML = "";
     for (let i = 2; i <= 10; i++) {
+      const userFriend =  featchUserFriend(i);
+      console.log("userFriend",userFriend);
+
       const persona = document.createElement('div');
       persona.className = 'persona';
-      const avatar = document.createElement('img')
-      // avatar.
+      const avatar = document.createElement('img');
+      avatar.className = 'avatar';
+      const friendName = document.createElement('p');
+
+      avatar.src = `./assets/avatar${i}.png`;
+      console.log("userFriend.name",userFriend.name);
+      friendName.textContent = userFriend.name
+
+      persona.appendChild(avatar);
+      persona.appendChild(friendName)
+
+      postsContainer.appendChild(persona)
     }
   });
 };
+
+const featchUserFriend = async (friendId) => {
+  const fetchUserFriend = await fetch(`${DATABASE_URL}/users/${friendId}`);
+  const friend = await fetchUserFriend.json();
+  console.log("friend",friend);
+  return friend;
+}
+
+
 
 // INIT
 
 getLoginUser();
 getUserPosts(getUserId());
-// getUserFriends();
+getUserFriends();

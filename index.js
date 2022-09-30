@@ -82,17 +82,26 @@ const getLoginUser = async () => {
   const userId = getUserId();
   const fetchUser = await fetch(`${DATABASE_URL}/users/${userId}`);
   const user = await fetchUser.json();
-  // FETCH USER DATA
 
   createAvatar(user);
 };
 
-const getUserPosts = async (id) => {
+const getUserPosts = async (userId) => {
   // FETCH POSTS DATA
-
+  const fetchAllPosts = await fetch(`${DATABASE_URL}/posts/`);
+  const allPosts = await fetchAllPosts.json();
+  const userPosts = allPosts.filter((post) => post.userId === userId);
   // FETCH COMMENTS RELATED TO POSTS
 
+  for (const post of userPosts) {
+    const featchPostComments = await fetch(
+      `${DATABASE_URL}/comments?postId=${post.id}`
+    );
+    post.comments = await featchPostComments.json();
+  }
+
   const postsCards = userPosts.map((post) => {
+    // const fetchAllComments
     return createPostCard(post);
   });
 
@@ -104,4 +113,4 @@ const getUserPosts = async (id) => {
 // INIT
 
 getLoginUser();
-// getUserPosts(getUserId());
+getUserPosts(getUserId());

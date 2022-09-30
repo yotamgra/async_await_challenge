@@ -87,11 +87,9 @@ const getLoginUser = async () => {
 };
 
 const getUserPosts = async (userId) => {
-  // FETCH POSTS DATA
   const fetchAllPosts = await fetch(`${DATABASE_URL}/posts/`);
   const allPosts = await fetchAllPosts.json();
   const userPosts = allPosts.filter((post) => post.userId === userId);
-  // FETCH COMMENTS RELATED TO POSTS
 
   for (const post of userPosts) {
     const featchPostComments = await fetch(
@@ -101,7 +99,6 @@ const getUserPosts = async (userId) => {
   }
 
   const postsCards = userPosts.map((post) => {
-    // const fetchAllComments
     return createPostCard(post);
   });
 
@@ -110,7 +107,20 @@ const getUserPosts = async (userId) => {
   });
 };
 
+const getUserFriends = () => {
+  friendsButton.addEventListener("click", () => {
+    postsContainer.innerHTML = "";
+    for (let i = 2; i <= 10; i++) {
+      const persona = document.createElement('div');
+      persona.className = 'persona';
+      const avatar = document.createElement('img')
+      // avatar.
+    }
+  });
+};
+
 // INIT
 
 getLoginUser();
 getUserPosts(getUserId());
+// getUserFriends();

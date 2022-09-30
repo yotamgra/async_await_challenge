@@ -79,8 +79,9 @@ const createAvatar = (user) => {
 };
 
 const getLoginUser = async () => {
-  const id = getUserId();
-
+  const userId = getUserId();
+  const fetchUser = await fetch(`${DATABASE_URL}/users/${userId}`);
+  const user = await fetchUser.json();
   // FETCH USER DATA
 
   createAvatar(user);
@@ -103,4 +104,4 @@ const getUserPosts = async (id) => {
 // INIT
 
 getLoginUser();
-getUserPosts(getUserId());
+// getUserPosts(getUserId());

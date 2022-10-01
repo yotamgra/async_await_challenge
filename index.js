@@ -107,12 +107,17 @@ const getUserPosts = async (userId) => {
   });
 };
 
-const getUserFriends = () => {
-  friendsButton.addEventListener("click", () => {
+const getUserFriends =  () => {
+  friendsButton.addEventListener("click", async () => {
     postsContainer.innerHTML = "";
-    for (let i = 2; i <= 10; i++) {
-      const userFriend =  featchUserFriend(i);
-      console.log("userFriend",userFriend);
+    const userId = getUserId();
+    const fetchAllUsers = await fetch(`${DATABASE_URL}/users`);
+    const allUsers = await fetchAllUsers.json();
+    console.log("allUsers",allUsers);
+    const userFriends = allUsers.filter(user => user.id!==userId)
+    console.log("userFriends",userFriends);
+    for (const friend of userFriends) {
+       console.log("userFriend",friend);
 
       const persona = document.createElement('div');
       persona.className = 'persona';
@@ -120,9 +125,9 @@ const getUserFriends = () => {
       avatar.className = 'avatar';
       const friendName = document.createElement('p');
 
-      avatar.src = `./assets/avatar${i}.png`;
-      console.log("userFriend.name",userFriend.name);
-      friendName.textContent = userFriend.name
+      avatar.src = `./assets/avatar${friend.id}.png`;
+      console.log("userFriend.name",friend.name);
+      friendName.textContent = friend.name
 
       persona.appendChild(avatar);
       persona.appendChild(friendName)

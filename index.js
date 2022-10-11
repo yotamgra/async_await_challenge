@@ -107,44 +107,54 @@ const getUserPosts = async (userId) => {
   });
 };
 
-const getUserFriends =  () => {
+const getUserFriends = () => {
   friendsButton.addEventListener("click", async () => {
     postsContainer.innerHTML = "";
     const userId = getUserId();
     const fetchAllUsers = await fetch(`${DATABASE_URL}/users`);
     const allUsers = await fetchAllUsers.json();
-    console.log("allUsers",allUsers);
-    const userFriends = allUsers.filter(user => user.id!==userId)
-    console.log("userFriends",userFriends);
+    
+    const userFriends = allUsers.filter((user) => user.id !== userId);
+    
     for (const friend of userFriends) {
-       console.log("userFriend",friend);
+      
 
-      const persona = document.createElement('div');
-      persona.className = 'persona';
-      const avatar = document.createElement('img');
-      avatar.className = 'avatar';
-      const friendName = document.createElement('p');
+      const persona = document.createElement("div");
+      persona.className = "persona";
+      const avatar = document.createElement("img");
+      avatar.className = "avatar";
+      const friendName = document.createElement("p");
 
       avatar.src = `./assets/avatar${friend.id}.png`;
-      console.log("userFriend.name",friend.name);
-      friendName.textContent = friend.name
+
+      friendName.textContent = friend.name;
+
+      const postsButton = document.createElement("button");
+      postsButton.innerText = "Show posts";
+
+      postsButton.addEventListener("click", () => {
+        console.log("clicked");
+        postsContainer.classList.remove("friends-container")
+        postsContainer.innerHTML= "";
+        console.log("friend.userId",friend.id);
+        getUserPosts(friend.id);
+      });
 
       persona.appendChild(avatar);
-      persona.appendChild(friendName)
+      persona.appendChild(friendName);
+      persona.appendChild(postsButton);
 
-      postsContainer.appendChild(persona)
+      postsContainer.appendChild(persona);
     }
+    postsContainer.classList.add("friends-container");
   });
 };
 
 const featchUserFriend = async (friendId) => {
   const fetchUserFriend = await fetch(`${DATABASE_URL}/users/${friendId}`);
   const friend = await fetchUserFriend.json();
-  console.log("friend",friend);
   return friend;
-}
-
-
+};
 
 // INIT
 

@@ -115,6 +115,10 @@ nav {
   cursor: pointer;
 }
 
+.friends-container {
+  flex-direction: column;
+}
+
 footer {
   grid-area: footer;
   height: 80px;

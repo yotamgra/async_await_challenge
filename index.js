@@ -79,17 +79,24 @@ const createAvatar = (user) => {
 };
 
 const getLoginUser = async () => {
-  const id = getUserId();
-
-  // FETCH USER DATA
+  const userId = getUserId();
+  const fetchUser = await fetch(`${DATABASE_URL}/users/${userId}`);
+  const user = await fetchUser.json();
 
   createAvatar(user);
 };
 
-const getUserPosts = async (id) => {
-  // FETCH POSTS DATA
+const getUserPosts = async (userId) => {
+  const fetchAllPosts = await fetch(`${DATABASE_URL}/posts/`);
+  const allPosts = await fetchAllPosts.json();
+  const userPosts = allPosts.filter((post) => post.userId === userId);
 
-  // FETCH COMMENTS RELATED TO POSTS
+  for (const post of userPosts) {
+    const featchPostComments = await fetch(
+      `${DATABASE_URL}/comments?postId=${post.id}`
+    );
+    post.comments = await featchPostComments.json();
+  }
 
   const postsCards = userPosts.map((post) => {
     return createPostCard(post);
@@ -100,7 +107,57 @@ const getUserPosts = async (id) => {
   });
 };
 
+const getUserFriends = () => {
+  friendsButton.addEventListener("click", async () => {
+    postsContainer.innerHTML = "";
+    const userId = getUserId();
+    const fetchAllUsers = await fetch(`${DATABASE_URL}/users`);
+    const allUsers = await fetchAllUsers.json();
+    
+    const userFriends = allUsers.filter((user) => user.id !== userId);
+    
+    for (const friend of userFriends) {
+      
+
+      const persona = document.createElement("div");
+      persona.className = "persona";
+      const avatar = document.createElement("img");
+      avatar.className = "avatar";
+      const friendName = document.createElement("p");
+
+      avatar.src = `./assets/avatar${friend.id}.png`;
+
+      friendName.textContent = friend.name;
+
+      const postsButton = document.createElement("button");
+      postsButton.innerText = "Show posts";
+
+      postsButton.addEventListener("click", () => {
+        console.log("clicked");
+        postsContainer.classList.remove("friends-container")
+        postsContainer.innerHTML= "";
+        console.log("friend.userId",friend.id);
+        getUserPosts(friend.id);
+      });
+
+      persona.appendChild(avatar);
+      persona.appendChild(friendName);
+      persona.appendChild(postsButton);
+
+      postsContainer.appendChild(persona);
+    }
+    postsContainer.classList.add("friends-container");
+  });
+};
+
+const featchUserFriend = async (friendId) => {
+  const fetchUserFriend = await fetch(`${DATABASE_URL}/users/${friendId}`);
+  const friend = await fetchUserFriend.json();
+  return friend;
+};
+
 // INIT
 
 getLoginUser();
 getUserPosts(getUserId());
+getUserFriends();
